@@ -61,8 +61,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-        </plugins>
-    </build>
+
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -89,4 +88,6 @@
             </execution>
         </executions>
     </plugin>
+        </plugins>
+    </build>
 </project>

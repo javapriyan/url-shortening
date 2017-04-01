@@ -20,14 +20,14 @@ import java.nio.charset.StandardCharsets;
  */
 public class UrlShorteningVertical extends AbstractVerticle{
 
-    private final StatsDClient statsd = new NonBlockingStatsDClient("valtanix", config().getString("statsd.host.url"), 8125);
+   // private final StatsDClient statsd = new NonBlockingStatsDClient("valtanix", config().getString("statsd.host.url"), 8125);
     Router router = Router.router(vertx);
          RedisOptions redisConfig = new RedisOptions();
 
 
     @Override
     public void start(Future<Void> fut) {
-        RedisClient redis = RedisClient.create(vertx, redisConfig.setHost(config().getString("redis.host.url")));
+        RedisClient redis = RedisClient.create(vertx, redisConfig.setHost(config().getString("localhost")));
         router.route().handler(BodyHandler.create());
         router.route("/status").handler(routingContext -> {
             HttpServerResponse response = routingContext.response();
@@ -65,7 +65,7 @@ public class UrlShorteningVertical extends AbstractVerticle{
 
         vertx.createHttpServer()
                 .requestHandler(router::accept)
-                .listen(8080    /*config().getInteger("server.port")*/, result -> {
+                .listen(8081    /*config().getInteger("server.port")*/, result -> {
                     if (result.succeeded()) {
                         fut.complete();
                     } else {
