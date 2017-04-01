@@ -1,0 +1,5 @@
+{
+  "redis.host.url":"127.0.0.1",
+  "statsd.host.url":"127.0.0.1",
+  "server.port":8080
+}
