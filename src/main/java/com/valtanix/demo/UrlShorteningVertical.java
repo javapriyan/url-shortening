@@ -43,8 +43,8 @@ public class UrlShorteningVertical extends AbstractVerticle{
                     HttpServerResponse response = routingContext.response();
                     response.putHeader("content-type", "application/json").setStatusCode(200)
                             .end("The URL requested is " + url.result());
-                    statsd.recordExecutionTimeToNow("url.shortening.expand,result=success",startTime);
-                    statsd.incrementCounter(key);
+                    //statsd.recordExecutionTimeToNow("url.shortening.expand,result=success",startTime);
+                    //statsd.incrementCounter(key);
                 }else{
                     HttpServerResponse response = routingContext.response();
                     response.putHeader("content-type", "application/json").setStatusCode(400)
@@ -65,8 +65,8 @@ public class UrlShorteningVertical extends AbstractVerticle{
                 HttpServerResponse response = routingContext.response();
                 response.putHeader("content-type","application/json").setStatusCode(200)
                         .end(new StringBuilder("Successfully shortened the URL :").append(token).toString());
-                statsd.recordExecutionTimeToNow("url.shortening.expand,result=success",startTime);
-                statsd.incrementCounter(token);
+                //statsd.recordExecutionTimeToNow("url.shortening.expand,result=success",startTime);
+                //statsd.incrementCounter(token);
 
             });
         });
