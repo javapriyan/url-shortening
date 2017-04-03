@@ -27,7 +27,7 @@ public class UrlShorteningVertical extends AbstractVerticle{
 
     @Override
     public void start(Future<Void> fut) {
-        RedisClient redis = RedisClient.create(vertx, redisConfig.setHost("localhost"));
+        RedisClient redis = RedisClient.create(vertx, redisConfig);
         router.route().handler(BodyHandler.create());
         router.route("/status").handler(routingContext -> {
             HttpServerResponse response = routingContext.response();
