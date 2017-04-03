@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class UrlShorteningVertical extends AbstractVerticle{
 
-   // private final StatsDClient statsd = new NonBlockingStatsDClient("valtanix", config().getString("statsd.host.url"), 8125);
+   private final StatsDClient statsd = new NonBlockingStatsDClient("valtanix", config().getString("localhost"), 8125);
     Router router = Router.router(vertx);
          RedisOptions redisConfig = new RedisOptions();
 
@@ -35,6 +35,7 @@ public class UrlShorteningVertical extends AbstractVerticle{
         });
 
         router.get("/get/:key").handler(routingContext->{
+            long startTime = System.currentTimeMillis();
             String key = routingContext.request().getParam("key"); //Getit from post body
             checkForEmptiness(routingContext, key,"They Key is not found !");
             redis.get(key,url -> {
@@ -42,15 +43,21 @@ public class UrlShorteningVertical extends AbstractVerticle{
                     HttpServerResponse response = routingContext.response();
                     response.putHeader("content-type", "application/json").setStatusCode(200)
                             .end("The URL requested is " + url.result());
+                    statsd.recordExecutionTimeToNow("url.shortening.expand,result=success",startTime);
+                    statsd.incrementCounter(key);
                 }else{
                     HttpServerResponse response = routingContext.response();
                     response.putHeader("content-type", "application/json").setStatusCode(400)
-                            .end("Given Key is not found");                }
+                            .end("Given Key is not found");
+                    statsd.recordExecutionTimeToNow("url.shortening.expand,result=failure",startTime);
+                }
 
             });
+
         });
 
         router.post("/put/:url").handler(routingContext -> {
+            long startTime = System.currentTimeMillis();
             String urlString = routingContext.request().getParam("url"); //Getit from post body
             checkForEmptiness(routingContext, urlString,"URL cannot be empty/Null");
             String token = getUrlToken(urlString);
@@ -58,6 +65,9 @@ public class UrlShorteningVertical extends AbstractVerticle{
                 HttpServerResponse response = routingContext.response();
                 response.putHeader("content-type","application/json").setStatusCode(200)
                         .end(new StringBuilder("Successfully shortened the URL :").append(token).toString());
+                statsd.recordExecutionTimeToNow("url.shortening.expand,result=success",startTime);
+                statsd.incrementCounter(token);
+
             });
         });
 
